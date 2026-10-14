@@ -8,12 +8,12 @@ import com.hyunyoung.libraryapi.repository.UserRepository;
 import com.hyunyoung.libraryapi.service.LoanService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/loans")
@@ -39,33 +39,25 @@ public class LoanController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<List<LoanResponse>> findMyLoans(Authentication authentication) {
+    public ResponseEntity<Page<LoanResponse>> findMyLoans(Authentication authentication,
+                                                          Pageable pageable) {
         Long userId = getCurrentUserId(authentication);
-        List<LoanResponse> loans = loanService
-                .findByUserId(userId)
-                .stream()
-                .map(LoanResponse::new)
-                .toList();
+        Page<LoanResponse> loans = loanService.findByUserId(userId, pageable)
+                .map(LoanResponse::new);
         return ResponseEntity.ok(loans);
     }
 
     @GetMapping
-    public ResponseEntity<List<LoanResponse>> findAll() {
-        List<LoanResponse> loans = loanService
-                .findAll()
-                .stream()
-                .map(LoanResponse::new)
-                .toList();
+    public ResponseEntity<Page<LoanResponse>> findAll(Pageable pageable) {
+        Page<LoanResponse> loans = loanService.findAll(pageable)
+                .map(LoanResponse::new);
         return ResponseEntity.ok(loans);
     }
 
     @GetMapping("/overdue")
-    public ResponseEntity<List<LoanResponse>> findOverdue() {
-        List<LoanResponse> loans = loanService
-                .findOverdue()
-                .stream()
-                .map(LoanResponse::new)
-                .toList();
+    public ResponseEntity<Page<LoanResponse>> findOverdue(Pageable pageable) {
+        Page<LoanResponse> loans = loanService.findOverdue(pageable)
+                .map(LoanResponse::new);
         return ResponseEntity.ok(loans);
     }
 

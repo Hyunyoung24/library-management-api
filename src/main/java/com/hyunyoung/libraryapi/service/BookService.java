@@ -8,10 +8,10 @@ import com.hyunyoung.libraryapi.exception.ResourceNotFoundException;
 import com.hyunyoung.libraryapi.repository.BookRepository;
 import com.hyunyoung.libraryapi.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +21,8 @@ public class BookService {
     private final BookRepository bookRepository;
     private final CategoryRepository categoryRepository;
 
-    public List<Book> findAll() {
-        return bookRepository.findAll();
+    public Page<Book> findAll(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 
     public Book findById(Long id) {

@@ -155,7 +155,7 @@ class BookControllerTest {
 
         mockMvc.perform(get("/api/books"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$.content.length()").value(2))
                 .andDo(print());
     }
 

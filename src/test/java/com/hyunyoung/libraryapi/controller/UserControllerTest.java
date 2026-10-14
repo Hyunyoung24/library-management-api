@@ -133,7 +133,7 @@ class UserControllerTest {
         mockMvc.perform(get("/api/users")
                         .header("Authorization", "Bearer " + adminToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$.content.length()").value(1))
                 .andDo(print());
     }
 

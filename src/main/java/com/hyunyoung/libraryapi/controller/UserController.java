@@ -6,11 +6,11 @@ import com.hyunyoung.libraryapi.dto.response.UserResponse;
 import com.hyunyoung.libraryapi.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -33,11 +33,9 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> findAll() {
-        List<UserResponse> users = userService.findAll()
-                .stream()
-                .map(UserResponse::new)
-                .toList();
+    public ResponseEntity<Page<UserResponse>> findAll(Pageable pageable) {
+        Page<UserResponse> users = userService.findAll(pageable)
+                .map(UserResponse::new);
         return ResponseEntity.ok(users);
     }
 

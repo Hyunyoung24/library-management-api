@@ -10,11 +10,12 @@ import com.hyunyoung.libraryapi.repository.BookRepository;
 import com.hyunyoung.libraryapi.repository.LoanRepository;
 import com.hyunyoung.libraryapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -61,15 +62,15 @@ public class LoanService {
         return loan;
     }
 
-    public List<Loan> findByUserId(Long userId) {
-        return loanRepository.findByUserId(userId);
+    public Page<Loan> findByUserId(Long userId, Pageable pageable) {
+        return loanRepository.findByUserId(userId, pageable);
     }
 
-    public List<Loan> findAll() {
-        return loanRepository.findAll();
+    public Page<Loan> findAll(Pageable pageable) {
+        return loanRepository.findAll(pageable);
     }
 
-    public List<Loan> findOverdue() {
-        return loanRepository.findByStatusAndDueDateBefore(LoanStatus.RENTED, LocalDateTime.now());
+    public Page<Loan> findOverdue(Pageable pageable) {
+        return loanRepository.findByStatusAndDueDateBefore(LoanStatus.RENTED, LocalDateTime.now(), pageable);
     }
 }

@@ -6,11 +6,11 @@ import com.hyunyoung.libraryapi.dto.response.BookResponse;
 import com.hyunyoung.libraryapi.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
@@ -20,11 +20,9 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping
-    public ResponseEntity<List<BookResponse>> findAll() {
-        List<BookResponse> books = bookService.findAll()
-                .stream()
-                .map(BookResponse::new)
-                .toList();
+    public ResponseEntity<Page<BookResponse>> findAll(Pageable pageable) {
+        Page<BookResponse> books = bookService.findAll(pageable)
+                .map(BookResponse::new);
         return ResponseEntity.ok(books);
     }
 
