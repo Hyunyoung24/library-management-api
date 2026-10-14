@@ -3,6 +3,7 @@ package com.hyunyoung.libraryapi.controller;
 import com.hyunyoung.libraryapi.dto.request.CategoryCreateRequest;
 import com.hyunyoung.libraryapi.dto.response.CategoryResponse;
 import com.hyunyoung.libraryapi.service.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryResponse> create(@RequestBody CategoryCreateRequest request) {
+    public ResponseEntity<CategoryResponse> create(@Valid @RequestBody CategoryCreateRequest request) {
         CategoryResponse response = new CategoryResponse(categoryService.create(request.getName()));
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

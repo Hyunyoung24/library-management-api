@@ -4,6 +4,7 @@ import com.hyunyoung.libraryapi.dto.request.AdminUserUpdateRequest;
 import com.hyunyoung.libraryapi.dto.request.UserUpdateRequest;
 import com.hyunyoung.libraryapi.dto.response.UserResponse;
 import com.hyunyoung.libraryapi.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -26,7 +27,7 @@ public class UserController {
 
     @PatchMapping("/me")
     public ResponseEntity<UserResponse> updateMyInfo(Authentication authentication,
-                                                     @RequestBody UserUpdateRequest request) {
+                                                     @Valid @RequestBody UserUpdateRequest request) {
         return ResponseEntity.ok(
                 new UserResponse(userService.updateMyInfo(authentication.getName(), request)));
     }
@@ -47,7 +48,7 @@ public class UserController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<UserResponse> updateAuthority(@PathVariable Long id,
-                                                        @RequestBody AdminUserUpdateRequest request) {
+                                                        @Valid @RequestBody AdminUserUpdateRequest request) {
         return ResponseEntity.ok(new UserResponse(userService.updateAuthority(id, request)));
     }
 

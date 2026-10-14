@@ -6,6 +6,7 @@ import com.hyunyoung.libraryapi.entity.User;
 import com.hyunyoung.libraryapi.exception.ResourceNotFoundException;
 import com.hyunyoung.libraryapi.repository.UserRepository;
 import com.hyunyoung.libraryapi.service.LoanService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class LoanController {
     private final UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<LoanResponse> create(@RequestBody LoanCreateRequest request,
+    public ResponseEntity<LoanResponse> create(@Valid @RequestBody LoanCreateRequest request,
                                                Authentication authentication) {
         Long userId = getCurrentUserId(authentication);
         LoanResponse response = new LoanResponse(loanService.create(userId, request.getBookId()));
