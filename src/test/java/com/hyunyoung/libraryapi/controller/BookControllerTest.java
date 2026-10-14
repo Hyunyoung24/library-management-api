@@ -233,4 +233,41 @@ class BookControllerTest {
                 .andExpect(status().isForbidden())
                 .andDo(print());
     }
+
+    // 입력값 검증 실패 테스트 케이스
+
+    @Test
+    @DisplayName("도서 등록 실패 - 제목 누락")
+    void create_fail_blankTitle() throws Exception {
+        Map<String, Object> bookMap = new HashMap<>();
+        bookMap.put("title", "");
+        bookMap.put("author", "테스트 저자");
+        bookMap.put("publisher", "테스트 출판사");
+        bookMap.put("isbn", "978-89-1234-567-0");
+
+        mockMvc.perform(post("/api/books")
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(bookMap)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("도서 수정 실패 - 저자 누락")
+    void update_fail_blankAuthor() throws Exception {
+        Long bookId = createBookAndGetId("테스트 도서", "978-89-0000-001-0");
+
+        Map<String, Object> updateMap = new HashMap<>();
+        updateMap.put("title", "수정된 제목");
+        updateMap.put("author", "");
+        updateMap.put("publisher", "수정된 출판사");
+
+        mockMvc.perform(put("/api/books/{id}", bookId)
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateMap)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
 }

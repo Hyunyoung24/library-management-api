@@ -178,4 +178,17 @@ class LoanControllerTest {
                 .andExpect(status().isForbidden())
                 .andDo(print());
     }
+
+    // 입력값 검증 실패 테스트 케이스
+
+    @Test
+    @DisplayName("대출 생성 실패 - 도서 ID 누락")
+    void create_fail_nullBookId() throws Exception {
+        mockMvc.perform(post("/api/loans")
+                        .header("Authorization", "Bearer " + userToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
 }

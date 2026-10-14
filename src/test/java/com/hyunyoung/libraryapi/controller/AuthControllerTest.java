@@ -170,4 +170,67 @@ class AuthControllerTest {
                 .andExpect(status().isBadRequest())
                 .andDo(print());
     }
+
+    // 입력값 검증 실패 테스트 케이스
+
+    @Test
+    @DisplayName("회원가입 실패 - 사용자명 누락")
+    void register_fail_blankUsername() throws Exception {
+        String json = objectMapper.writeValueAsString(Map.of(
+                "email", "test@example.com",
+                "password", "password123"
+        ));
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("회원가입 실패 - 잘못된 이메일 형식")
+    void register_fail_invalidEmail() throws Exception {
+        String json = objectMapper.writeValueAsString(Map.of(
+                "username", "testuser",
+                "email", "testexample.com",
+                "password", "password123"
+        ));
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("회원가입 실패 - 비밀번호 길이 부족")
+    void register_fail_shortPassword() throws Exception {
+        String json = objectMapper.writeValueAsString(Map.of(
+                "username", "testuser",
+                "email", "test@example.com",
+                "password", "shortpw"
+        ));
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("로그인 실패 - 사용자명 누락")
+    void login_fail_blankUsername() throws Exception {
+        String json = objectMapper.writeValueAsString(Map.of(
+                "password", "password123"
+        ));
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
 }

@@ -204,4 +204,45 @@ class UserControllerTest {
                 .andExpect(status().isForbidden())
                 .andDo(print());
     }
+
+    // 입력값 검증 실패 테스트 케이스
+
+    @Test
+    @DisplayName("내 정보 수정 실패 - 잘못된 이메일 형식")
+    void updateMyInfo_fail_invalidEmail() throws Exception {
+        Map<String, String> updateMap = new HashMap<>();
+        updateMap.put("email", "invalid-email");
+
+        mockMvc.perform(patch("/api/users/me")
+                        .header("Authorization", "Bearer " + userToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateMap)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("내 정보 수정 실패 - 비밀번호 길이 부족")
+    void updateMyInfo_fail_shortPassword() throws Exception {
+        Map<String, String> updateMap = new HashMap<>();
+        updateMap.put("password", "short");
+
+        mockMvc.perform(patch("/api/users/me")
+                        .header("Authorization", "Bearer " + userToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateMap)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("권한 변경 실패 - 권한값 누락")
+    void updateAuthority_fail_blankAuthority() throws Exception {
+        mockMvc.perform(patch("/api/users/{id}", testUser.getId())
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
 }
