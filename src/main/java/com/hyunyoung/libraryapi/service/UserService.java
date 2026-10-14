@@ -4,6 +4,8 @@ import com.hyunyoung.libraryapi.dto.request.AdminUserUpdateRequest;
 import com.hyunyoung.libraryapi.dto.request.UserUpdateRequest;
 import com.hyunyoung.libraryapi.entity.User;
 import com.hyunyoung.libraryapi.enums.Authority;
+import com.hyunyoung.libraryapi.exception.DuplicateResourceException;
+import com.hyunyoung.libraryapi.exception.ResourceNotFoundException;
 import com.hyunyoung.libraryapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,12 +28,12 @@ public class UserService {
 
     public User findById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("사용자를 찾을 수 없습니다."));
     }
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("사용자를 찾을 수 없습니다."));
     }
 
     @Transactional
@@ -40,7 +42,7 @@ public class UserService {
 
         if (request.getEmail() != null) {
             if (userRepository.existsByEmail(request.getEmail())) {
-                throw new RuntimeException("이미 존재하는 이메일입니다.");
+                throw new DuplicateResourceException("이미 존재하는 이메일입니다.");
             }
             user.updateInfo(request.getEmail());
         }

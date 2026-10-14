@@ -5,6 +5,7 @@ import com.hyunyoung.libraryapi.entity.Loan;
 import com.hyunyoung.libraryapi.entity.User;
 import com.hyunyoung.libraryapi.enums.BookStatus;
 import com.hyunyoung.libraryapi.enums.LoanStatus;
+import com.hyunyoung.libraryapi.exception.ResourceNotFoundException;
 import com.hyunyoung.libraryapi.repository.BookRepository;
 import com.hyunyoung.libraryapi.repository.LoanRepository;
 import com.hyunyoung.libraryapi.repository.UserRepository;
@@ -27,12 +28,12 @@ public class LoanService {
 
     @Transactional
     public Loan create(Long userId, Long bookId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("사용자를 찾을 수 없습니다."));
 
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("도서를 찾을 수 없습니다."));
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new ResourceNotFoundException("도서를 찾을 수 없습니다."));
 
         if (book.getStatus() != BookStatus.AVAILABLE) {
-            throw new RuntimeException("이미 대출 중인 도서입니다.");
+            throw new IllegalStateException("이미 대출 중인 도서입니다.");
         }
 
         book.updateStatus(BookStatus.RENTED);
@@ -44,14 +45,14 @@ public class LoanService {
     @Transactional
     public Loan returnBook(Long loanId, Long userId) {
         Loan loan = loanRepository.findById(loanId)
-                .orElseThrow(() -> new RuntimeException("대출 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("대출 정보를 찾을 수 없습니다."));
 
         if (!loan.getUser().getId().equals(userId)) {
-            throw new RuntimeException("대출자명과 사용자명이 일치하지 않습니다.");
+            throw new IllegalStateException("대출자명과 사용자명이 일치하지 않습니다.");
         }
 
         if (loan.getReturnDate() != null) {
-            throw new RuntimeException("이미 반납된 도서입니다.");
+            throw new IllegalStateException("이미 반납된 도서입니다.");
         }
 
         loan.returnBook();

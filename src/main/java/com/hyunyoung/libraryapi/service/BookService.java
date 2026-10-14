@@ -4,6 +4,7 @@ import com.hyunyoung.libraryapi.dto.request.BookCreateRequest;
 import com.hyunyoung.libraryapi.dto.request.BookUpdateRequest;
 import com.hyunyoung.libraryapi.entity.Book;
 import com.hyunyoung.libraryapi.entity.Category;
+import com.hyunyoung.libraryapi.exception.ResourceNotFoundException;
 import com.hyunyoung.libraryapi.repository.BookRepository;
 import com.hyunyoung.libraryapi.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class BookService {
 
     public Book findById(Long id) {
         return bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("도서를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("도서를 찾을 수 없습니다."));
     }
 
     @Transactional
@@ -34,7 +35,7 @@ public class BookService {
         Category category = null;
         if (request.getCategoryId() != null) {
             category = categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("카테고리를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new ResourceNotFoundException("카테고리를 찾을 수 없습니다."));
         }
 
         Book book = Book.create(
@@ -55,7 +56,7 @@ public class BookService {
         Category category = null;
         if (request.getCategoryId() != null) {
             category = categoryRepository.findById(request.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("카테고리를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new ResourceNotFoundException("카테고리를 찾을 수 없습니다."));
         }
 
         book.update(

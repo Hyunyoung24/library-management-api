@@ -3,6 +3,7 @@ package com.hyunyoung.libraryapi.controller;
 import com.hyunyoung.libraryapi.dto.request.LoanCreateRequest;
 import com.hyunyoung.libraryapi.dto.response.LoanResponse;
 import com.hyunyoung.libraryapi.entity.User;
+import com.hyunyoung.libraryapi.exception.ResourceNotFoundException;
 import com.hyunyoung.libraryapi.repository.UserRepository;
 import com.hyunyoung.libraryapi.service.LoanService;
 import lombok.RequiredArgsConstructor;
@@ -70,7 +71,7 @@ public class LoanController {
     private Long getCurrentUserId(Authentication authentication) {
         String username = authentication.getName();
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("사용자를 찾을 수 없습니다."));
         return user.getId();
     }
 }

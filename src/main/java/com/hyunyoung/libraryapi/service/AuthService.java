@@ -4,6 +4,9 @@ import com.hyunyoung.libraryapi.config.JwtTokenProvider;
 import com.hyunyoung.libraryapi.dto.request.LoginRequest;
 import com.hyunyoung.libraryapi.dto.request.RegisterRequest;
 import com.hyunyoung.libraryapi.entity.User;
+import com.hyunyoung.libraryapi.exception.DuplicateResourceException;
+import com.hyunyoung.libraryapi.exception.ResourceNotFoundException;
+import com.hyunyoung.libraryapi.exception.InvalidRequestException;
 import com.hyunyoung.libraryapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,10 +25,10 @@ public class AuthService {
     @Transactional
     public User register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("이미 존재하는 사용자명입니다.");
+            throw new DuplicateResourceException("이미 존재하는 사용자명입니다.");
         }
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("이미 존재하는 이메일입니다.");
+            throw new DuplicateResourceException("이미 존재하는 이메일입니다.");
         }
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
@@ -36,10 +39,10 @@ public class AuthService {
 
     public String login(LoginRequest request) {
         User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("사용자를 찾을 수 없습니다."));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new InvalidRequestException("비밀번호가 일치하지 않습니다.");
         }
 
         return jwtTokenProvider.createToken(user.getUsername(), user.getAuthority().name());
