@@ -26,10 +26,14 @@ public class BookController {
 
     @Operation(
             summary = "도서 목록",
-            description = "등록된 도서 목록을 확인합니다.")
+            description = "등록된 도서 목록을 확인합니다. 제목, 저자, 카테고리로 검색할 수 있습니다.")
     @GetMapping
-    public ResponseEntity<Page<BookResponse>> findAll(Pageable pageable) {
-        Page<BookResponse> books = bookService.findAll(pageable)
+    public ResponseEntity<Page<BookResponse>> findAll(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) Long categoryId,
+            Pageable pageable) {
+        Page<BookResponse> books = bookService.findAll(title, author, categoryId, pageable)
                 .map(BookResponse::new);
         return ResponseEntity.ok(books);
     }
