@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: libraryapi
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/library}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:your-password}
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:create}
+    show-sql: true
+
+jwt:
+  secret: ${JWT_SECRET:your-jwt-secret-key}
+  expiration: ${JWT_EXPIRATION:86400000}
