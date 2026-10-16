@@ -156,24 +156,27 @@ src/main/java/com/hyunyoung/libraryapi/
 ### MySQL 데이터베이스 생성
 
 ```sql
-CREATE DATABASE library_db;
+CREATE DATABASE library;
 ```
 
-### application.yml 설정
+### application-example.yaml -> application.yaml 파일명 변경 후 설정
 
 ```yaml
 spring:
+  application:
+    name: libraryapi
   datasource:
-    url: jdbc:mysql://localhost:3306/library_db
-    username: [사용자명]
-    password: [비밀번호]
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/library}
+    username: ${SPRING_DATASOURCE_USERNAME:사용자명}
+    password: ${SPRING_DATASOURCE_PASSWORD:비밀번호}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:create}
+    show-sql: true
 
 jwt:
-  secret: [JWT 시크릿 키]
-  expiration: 86400000
+  secret: ${JWT_SECRET:JWT 시크릿 키}
+  expiration: ${JWT_EXPIRATION:86400000}
 ```
 
 ### 빌드 및 실행
